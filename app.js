@@ -1,11 +1,12 @@
 //-------------------------------------------------------------------------------------------------------------------------------------
 //IMPORTS - LIBRARIES/MODUELS
-const express  = require('express');
-const mongoose = require('mongoose');
-const path     = require('path');
-const flash    = require('connect-flash');
-const session  = require('express-session')
-//const morgan   = require('morgan');
+const express        = require('express');
+const mongoose       = require('mongoose');
+const path           = require('path');
+const flash          = require('connect-flash');
+const session        = require('express-session');
+const methodOverride = require('method-override');
+//const morgan         = require('morgan');
 
 //IMPORT - INTERNAL
 const { mongoDbUrl, PORT, globalVariables } = require('./config/configuration');
@@ -62,6 +63,11 @@ app.use(globalVariables);
 //SETUP VIEW ENGINE
 app.set('view engine', 'ejs'); 
 app.set('views', 'views'); 
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//METHOD OVERRIDE MIDDLEWARE
+app.use(methodOverride('newMethod'));
 
 
 //-------------------------------------------------------------------------------------------------------------------------------------

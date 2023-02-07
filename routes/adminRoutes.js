@@ -32,6 +32,8 @@ router.route('/')
 router.route('/posts')
     .get(adminController.getPosts);
 
+router.route('/testposts')
+    .get(adminController.getPostsTEST);
 
 //-------------------------------------------------------------------------------------------------------------------------------------
 //ROUTES ADMIN CREATE POSTS
@@ -45,6 +47,18 @@ router.route('/posts/create')
 router.route("/posts/edit/:id")
     .get(adminController.editPosts);
 
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//ROUTES ADMIN DELETE POSTS
+router.route("/posts/delete/:id")
+    .delete(adminController.deletePosts);
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//ROUTES ADMIN CATEGORIES
+router.route("/category")
+    .get(adminController.getCategories)
+    .post(adminController.createCategories);
 
 //-------------------------------------------------------------------------------------------------------------------------------------
 //EXPORTS

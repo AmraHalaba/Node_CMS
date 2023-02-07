@@ -99,7 +99,7 @@
             </ul>
           </li> -->
           <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
-            <a class="nav-link" href="admin/category">
+            <a class="nav-link" href="#">
               <i class="fa fa-fw fa-link"></i>
               <span class="nav-link-text">Categories</span>
             </a>
@@ -211,81 +211,63 @@
   </nav>
 
   <!--CONTENT WRAPPER-->
-  <div class="content-wrapper">
-
-    <!--FLASH MESSAGES-->
-    <% if (success_message) { %>
-    <div class="alert alert-success alert-dismissible fade show mt-2 auto-hide" role="alert">
-        <strong> <%= success_message %> </strong>
-
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
-        <span aria-hidden="true">&times;</span>
-    </div>
-    <% } %>
-    
-    <% if (error_message) { %>
-    <div class="alert alert-danger alert-dismissible fade show mt-2 auto-hide" role="alert">
-        <strong> <%= error_message %> </strong>
-
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>
-        <span aria-hidden="true">&times;</span>
-    </div>
-    <% } %>
-
-    
-    <div class="container-fluid"></div>
+    <div class="content-wrapper">
 
         <div class="container">
-            <div class="alert alert-secondary text-center">
-                <h1>ALL POSTS</h1>
+            <h3 class="alert alert-dark p-3 text-dark text-center">All Categories </h3>
+
+            <div class="row">
+                <div class="col-6 mx-auto">
+
+                    <% if (categories.length > 0) { %>
+                    <table class="table table-bordered text-center border-success text-white">
+                        <thead class="bg-primary">
+                        <tr>
+                            <th>Title</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-hover bg-dark category-list">
+
+                        <% categories.forEach(cat => { %>
+                            <tr>
+
+                                <td> <%= cat.title %> </td>
+                                <td class="d-flex justify-content-center">
+                                    <a href="/admin/category/edit/<%= cat._id %>" class="btn btn-sm btn-warning mr-2" role="button">Edit Category</a>
+                                    <form action="/admin/category/<%= cat._id %>?newMethod=DELETE" method="post">
+                                        <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+
+                        </tbody>
+
+                    </table>
+                        <% } else { %>
+                        <div class="container text-center">
+                            <h3>No Categories yet</h3>
+                        </div>
+                    <% } %>
+
+                </div>
             </div>
 
-            <% if (posts.length > 0) { %>
-              <table class="table table-bordered ">
-                  <thead class="bg-dark">
-                      <tr class="text-white text-center">
-                          <th>Title</th>
-                          <th>Description</th>
-                          <th>Status</th>
-                          <th>Comments Allowed</th>
-                          <th>Category</th>
-                          <th>Actions</th>
-                      </tr>
-                  </thead>
-                  <tbody class="text-center">
-                    
-                    <% posts.forEach(post => { %>
-                          <tr>
-                              <td> <%= post.title %> </td>
-                              <td> <%= post.description %> </td>
-                              <td> <%= post.status %> </td>
-                              <td> <%= post.allowComments %> </td>
+            <hr>
 
-                              
-                                <td> <%= post.category %> </td>
-                              
-                              <td class="d-flex">
-
-                                <a href="/admin/posts/edit/<%= post._id %>" class="btn btn-sm btn-warning mr-2"> Edit Post </a>
-                                
-                                <form action="/admin/posts/delete/<%= post._id %>?newMethod=DELETE" method="POST">
-                                  <button type="submit" class="btn btn-sm btn-danger"> Delete Post </button>
-                                </form>
-
-                          </tr>
-                    <% }); %> 
-                    
-                  </tbody>
-              </table>
-            <% } else { %>
-                    <div class="container text-center">
-                      <h3>No posts yet</h3>
-                    </div>
-            <% } %>
-
+            <div class="row p-4">
+                <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" class="form-control" id="category-title" name="title" placeholder="Enter Title">
+                        </div>
+                            <button class="btn btn-outline-success btn-lg" id="create-category-button">Create Category</button>
+                </div>
+            </div>
         </div>
 
-  </div>
+    </div>
 
 <!--FOOTER-->
     <footer class="sticky-footer">
@@ -356,6 +338,40 @@
     <!-- Custom scripts for this page-->
     <script src="/js/sb-admin-datatables.min.js"></script>
     <script src="/js/sb-admin-charts.min.js"></script>
+
+    <script>
+        //set the flash messages to dissapper automatically
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('.auto-hide').slideUp(300);
+            }, 2000);
+        });
+
+        //AJAX script for creating new categories
+        $("#create-category-button").on('click', function(e) {
+            e.preventDefault(); //prevent any default (previous) event clicks affecting the form
+
+            var data = $("#category-title").val(); //get value of the input field by id
+            $.ajax( {
+                url: '/admin/category',
+                type: "POST",
+                data: {name: data},
+                success: function (response) {
+                    var html = `<td> ${response.title} </td>
+                                <td class="d-flex justify-content-center">
+                                    <a href="/admin/category/edit/${response.id}" class="btn btn-sm btn-warning mr-2" role="button">Edit Category</a>
+                                    <form action="/admin/category/${response.id}?newMethod=DELETE" method="post">
+                                        <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                                    </form>
+                                </td>`;
+                                
+                                $(".category-list").append(html);
+                }
+            } )
+        } )
+
+    </script>
+
   </div>
 </body>
 
